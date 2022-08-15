@@ -1,11 +1,13 @@
 package com.dwlhm.cpacp_basic
 
+import android.bluetooth.BluetoothGattService
 import android.content.*
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import java.util.UUID
 
 
 class ReadingActivity : AppCompatActivity() {
@@ -48,13 +50,48 @@ class ReadingActivity : AppCompatActivity() {
                 }
                 BluetoothLeService.ACTION_GATT_DISCOVERED -> {
                     Log.d("ACTION_GATT_DISCOVERED", "START")
-//                    displayGattServices(bleService?.getSupportedGattServices())
+                    displayGattServices(bleService?.getSupportedGattServices())
                 }
                 BluetoothLeService.ACTION_DATA_AVAILABLE -> {
                     oksigenVal.text = p1.getStringExtra("BLE_OKSIGEN")
                     flowVal.text = p1.getStringExtra("BLE_FLOW")
                     gelembungVal.text = p1.getStringExtra("BLE_GELEMBUNG")
                 }
+            }
+        }
+    }
+
+    private fun displayGattServices(gattServices: List<BluetoothGattService?>?) {
+        if (gattServices == null) {
+            isConnected.text = "COMMUNICATION FAILED"
+            return
+        }
+
+        var uuid: UUID
+
+        gattServices.forEach{ device ->
+            val characteristics = device?.characteristics
+
+            characteristics?.forEach { char ->
+                if (char.uuid == BluetoothLeService.UUID_GELEMBUNG) {
+                    Log.wtf("HA", "HEHE")
+                    bleService?.readCharacteristic(char)
+                }
+
+//                when (char.uuid) {
+//                    BluetoothLeService.UUID_OKSIGEN -> {
+//                        bleService?.readCharacteristic(char)
+//                        Log.d("BLE_CHAR_READING", "READING OKSIGEN")
+//                    }
+//                    BluetoothLeService.UUID_GELEMBUNG -> {
+//                        bleService?.readCharacteristic(char)
+//                        Log.d("BLE_CHAR_READING", "READING GELEMBUNG")
+//                    }
+//                    BluetoothLeService.UUID_FLOW -> {
+//                        bleService?.readCharacteristic(char)
+//                        Log.d("BLE_CHAR_READING", "READING FLOW")
+//                    }
+//                }
             }
         }
     }
@@ -91,7 +128,6 @@ class ReadingActivity : AppCompatActivity() {
                     finish()
                 }
                 devMac?.let {
-                    Log.d("BLE", "CONNECTED 2")
                     bluetooth.connect(it)
                 }
             }

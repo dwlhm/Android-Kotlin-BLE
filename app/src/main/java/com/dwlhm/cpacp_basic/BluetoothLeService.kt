@@ -32,7 +32,6 @@ class BluetoothLeService: Service() {
         }
         return true
     }
-
     fun connect(address: String): Boolean {
         btAdapter?.let { adapter ->
             try {
@@ -84,6 +83,90 @@ class BluetoothLeService: Service() {
                 broadcastUpdate(ACTION_GATT_DISCOVERED)
             } else Log.w("BLE", "onServicesDiscovered received: $status")
         }
+
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?,
+            status: Int
+        ) {
+            super.onCharacteristicRead(gatt, characteristic, status)
+            Log.wtf("HA 3", "HEHE 3")
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                Log.wtf("HA 4", "HEHE 4")
+                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
+            }
+        }
+
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt?,
+            characteristic: BluetoothGattCharacteristic?
+        ) {
+            super.onCharacteristicChanged(gatt, characteristic)
+            broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic)
+        }
+    }
+
+    private fun broadcastUpdate(action: String, characteristic: BluetoothGattCharacteristic?) {
+        val intent = Intent(action)
+
+        val flag: Int
+
+        Log.d("BLE_CHAR_READINGS", characteristic?.properties.toString())
+
+        when (characteristic?.uuid) {
+            UUID_GELEMBUNG -> {
+                flag = characteristic.properties
+                val format = when (flag and 0x01) {
+                    0x01 -> {
+                        Log.d("GELEMBUNG_BLE", "Format UINT16")
+                        BluetoothGattCharacteristic.FORMAT_UINT16
+                    }
+                    else -> {
+                        Log.d("GELEMBUNG_BLE", "Format UNIT8")
+                        BluetoothGattCharacteristic.FORMAT_UINT8
+                    }
+                }
+                val value = characteristic.getIntValue(format, 1)
+                Log.d("GELEMBUNG_BLE", String.format("Received val: %d", value))
+                intent.putExtra("GELEMBUNG", (value).toString())
+            }
+            UUID_OKSIGEN -> {
+                flag = characteristic.properties
+                val format = when (flag and 0x01) {
+                    0x01 -> {
+                        Log.d("OKSIGEN_BLE", "Format UINT16")
+                        BluetoothGattCharacteristic.FORMAT_UINT16
+                    }
+                    else -> {
+                        Log.d("OKSIGEN_BLE", "Format UNIT8")
+                        BluetoothGattCharacteristic.FORMAT_UINT8
+                    }
+                }
+                val value = characteristic.getIntValue(format, 1)
+                Log.d("OKSIGEN_BLE", String.format("Received val: %d", value))
+                intent.putExtra("OKSIGEN", (value).toString())
+            }
+            UUID_FLOW -> {
+                flag = characteristic.properties
+                val format = when (flag and 0x01) {
+                    0x01 -> {
+                        Log.d("FLOW_BLE", "Format UINT16")
+                        BluetoothGattCharacteristic.FORMAT_UINT16
+                    }
+                    else -> {
+                        Log.d("FLOW_BLE", "Format UNIT8")
+                        BluetoothGattCharacteristic.FORMAT_UINT8
+                    }
+                }
+                val value = characteristic.getIntValue(format, 1)
+                Log.d("FLOW_BLE", String.format("Received val: %d", value))
+                intent.putExtra("FLOW", (value).toString())
+            }
+            else -> {
+                return
+            }
+        }
+        sendBroadcast(intent)
     }
 
     private fun broadcastUpdate(action: String) {
@@ -111,10 +194,46 @@ class BluetoothLeService: Service() {
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
             }
+            Log.wtf("HA 2", "HEHE 2")
             it.readCharacteristic(characteristic)
         } ?: run {
-            Log.w("BLE", "BTGATT NOT INITIALIZED")
+            Log.w("BLE", "BTGATT NOT INITIALIZED 1")
             return
+        }
+    }
+
+    fun setCharacteristicNotification(
+        characteristic: BluetoothGattCharacteristic,
+        enabled: Boolean
+    ) {
+        btGatt?.let {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {}
+            it.setCharacteristicNotification(characteristic, enabled)
+
+            when (characteristic.uuid) {
+                UUID_GELEMBUNG -> {
+                    val descriptor = characteristic.getDescriptor(UUID_GELEMBUNG)
+                    descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    it.writeDescriptor(descriptor)
+                }
+                UUID_OKSIGEN -> {
+                    val descriptor = characteristic.getDescriptor(UUID_OKSIGEN)
+                    descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    it.writeDescriptor(descriptor)
+                }
+                UUID_FLOW -> {
+                    val descriptor = characteristic.getDescriptor(UUID_FLOW)
+                    descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    it.writeDescriptor(descriptor)
+                }
+                else -> {
+                    Log.w("BLE_NOTIFY", "BluetoothGatt not Initialized")
+                }
+            }
         }
     }
 
