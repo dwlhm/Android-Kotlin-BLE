@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">CPAP Monitoring v.1.1.9</string>
+    <string name="welcome_brand">Smart CPAP-Basic</string>
+    <string name="btn_register_device">Tambah Perangkat Baru</string>
+    <string name="dialog_msg_register_device">Masukan ID Perangkat</string>
+    <string name="dialog_title_register_device">Perangkat Baru</string>
+    <string name="device_mac" />
+    <string name="device_mac_title">MAC Address: </string>
+    <string name="device_date" />
+    <string name="ic_device_desc">Device Illustration</string>
+    <string name="device_date_title">Nama Perangkat:</string>
+    <string name="apps_brand_description">Apps Brand Logo</string>
+    <!-- Information Activity -->
+    <string name="info_bt_not_enabled_text">Aktifkan bluetooth untuk menggunakan aplikasi ini</string>
+    <string name="info_bt_not_enabled_action">Aktifkan Bluetooth</string>
+    <string name="info_null_device_registered_text">Tidak terdapat perangkat CPAP yang tersimpan dalam aplikasi</string>
+    <string name="info_null_device_registered_action">Tambah perangkat baru</string>
+    <string name="info_null_device_registered_action_running">Stop Pencarian CPAP</string>
+    <string name="info_null_device_registered_warn_running">Mencari Perangkat CPAP</string>
+    <string name="info_null_device_registered_warn_failed">Perangkat CPAP tidak terdeteksi di dekat anda</string>
+    <string name="ble_unknown_service">Unknown services</string>
+    <string name="ble_unknown_characteristic">Unknown characteristic</string>
+</resources>
