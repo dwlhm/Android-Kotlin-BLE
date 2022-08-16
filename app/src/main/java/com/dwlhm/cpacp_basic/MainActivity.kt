@@ -95,7 +95,8 @@ class MainActivity : AppCompatActivity(), RecyclerViewClickListener {
         setContentView(R.layout.activity_main)
 
         findViewById<Button>(R.id.btn_register_device).setOnClickListener{
-
+            val intent = Intent(this, RegisterDeviceActivity::class.java)
+            startActivity(intent)
         }
 
         val listDevice: RecyclerView = findViewById(R.id.list_device_card)

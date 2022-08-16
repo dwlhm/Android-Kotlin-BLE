@@ -25,16 +25,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.getSystemService
 
 class RegisterDeviceActivity : AppCompatActivity() {
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_device)
 
         val textInfoRegister: TextView = findViewById(R.id.register_device_status)
-
-
     }
-
-
 }
