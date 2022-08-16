@@ -167,63 +167,6 @@ class BluetoothLeService: Service() {
         }
     }
 
-    fun getSupportedGattServices(): List<BluetoothGattService?>? {
-        Log.d("BLE", "START SERVICE")
-        return btGatt?.services
-    }
-
-    fun readCharacteristic(characteristic: BluetoothGattCharacteristic) {
-        if (btGatt == null) {
-            Log.wtf("BLE", "BTGATT NOT INITIALIZED 1")
-            return
-        }
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.BLUETOOTH_CONNECT
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {}
-        btGatt!!.setCharacteristicNotification(characteristic, true)
-        val uuid = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
-        val descriptor: BluetoothGattDescriptor = characteristic.getDescriptor(uuid)
-        descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-        btGatt!!.writeDescriptor(descriptor)
-    }
-
-    fun setCharacteristicNotification(
-        characteristic: BluetoothGattCharacteristic,
-        enabled: Boolean
-    ) {
-        btGatt?.let {
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {}
-            it.setCharacteristicNotification(characteristic, enabled)
-
-            when (characteristic.uuid) {
-                UUID_GELEMBUNG -> {
-                    val descriptor = characteristic.getDescriptor(UUID_GELEMBUNG)
-                    descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                    it.writeDescriptor(descriptor)
-                }
-                UUID_OKSIGEN -> {
-                    val descriptor = characteristic.getDescriptor(UUID_OKSIGEN)
-                    descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                    it.writeDescriptor(descriptor)
-                }
-                UUID_FLOW -> {
-                    val descriptor = characteristic.getDescriptor(UUID_FLOW)
-                    descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                    it.writeDescriptor(descriptor)
-                }
-                else -> {
-                    Log.w("BLE_NOTIFY", "BluetoothGatt not Initialized")
-                }
-            }
-        }
-    }
-
     override fun onBind(p0: Intent?): IBinder? {
         return binder
     }

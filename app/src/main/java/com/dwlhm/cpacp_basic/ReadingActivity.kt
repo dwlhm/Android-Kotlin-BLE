@@ -48,50 +48,12 @@ class ReadingActivity : AppCompatActivity() {
                 BluetoothLeService.ACTION_GATT_DISCONNECTED -> {
                     isConnected.text = "DISCONNECTED"
                 }
-                BluetoothLeService.ACTION_GATT_DISCOVERED -> {
-                    Log.d("ACTION_GATT_DISCOVERED", "START")
-                    displayGattServices(bleService?.getSupportedGattServices())
-                }
                 BluetoothLeService.ACTION_DATA_AVAILABLE -> {
-                    oksigenVal.text = p1.getStringExtra("BLE_OKSIGEN")
-                    flowVal.text = p1.getStringExtra("BLE_FLOW")
-                    gelembungVal.text = p1.getStringExtra("BLE_GELEMBUNG")
+                    oksigenVal.text = p1.getStringExtra("OKSIGEN")
+                    flowVal.text = p1.getStringExtra("FLOW")
+                    if (p1.getStringExtra("GELEMBUNG") == "1.00") gelembungVal.text =  "BERGELEMBUNG"
+                    else gelembungVal.text =  "AMAN"
                 }
-            }
-        }
-    }
-
-    private fun displayGattServices(gattServices: List<BluetoothGattService?>?) {
-        if (gattServices == null) {
-            isConnected.text = "COMMUNICATION FAILED"
-            return
-        }
-
-        var uuid: UUID
-
-        gattServices.forEach{ device ->
-            val characteristics = device?.characteristics
-
-            characteristics?.forEach { char ->
-                Log.d("UUID", char.uuid.toString())
-//                if (char.uuid == BluetoothLeService.UUID_GELEMBUNG) {
-                    bleService?.readCharacteristic(char)
-//                }
-
-//                when (char.uuid) {
-//                    BluetoothLeService.UUID_OKSIGEN -> {
-//                        bleService?.readCharacteristic(char)
-//                        Log.d("BLE_CHAR_READING", "READING OKSIGEN")
-//                    }
-//                    BluetoothLeService.UUID_GELEMBUNG -> {
-//                        bleService?.readCharacteristic(char)
-//                        Log.d("BLE_CHAR_READING", "READING GELEMBUNG")
-//                    }
-//                    BluetoothLeService.UUID_FLOW -> {
-//                        bleService?.readCharacteristic(char)
-//                        Log.d("BLE_CHAR_READING", "READING FLOW")
-//                    }
-//                }
             }
         }
     }
