@@ -73,10 +73,10 @@ class ReadingActivity : AppCompatActivity() {
             val characteristics = device?.characteristics
 
             characteristics?.forEach { char ->
-                if (char.uuid == BluetoothLeService.UUID_GELEMBUNG) {
-                    Log.wtf("HA", "HEHE")
+                Log.d("UUID", char.uuid.toString())
+//                if (char.uuid == BluetoothLeService.UUID_GELEMBUNG) {
                     bleService?.readCharacteristic(char)
-                }
+//                }
 
 //                when (char.uuid) {
 //                    BluetoothLeService.UUID_OKSIGEN -> {
