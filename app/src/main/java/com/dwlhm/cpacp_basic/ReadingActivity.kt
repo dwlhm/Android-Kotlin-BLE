@@ -49,10 +49,10 @@ class ReadingActivity : AppCompatActivity() {
                     isConnected.text = "DISCONNECTED"
                 }
                 BluetoothLeService.ACTION_DATA_AVAILABLE -> {
-                    oksigenVal.text = p1.getStringExtra("OKSIGEN")
-                    flowVal.text = p1.getStringExtra("FLOW")
-                    if (p1.getStringExtra("GELEMBUNG") == "1.00") gelembungVal.text =  "BERGELEMBUNG"
-                    else gelembungVal.text =  "AMAN"
+                    if (p1.getStringExtra("OKSIGEN") != null) oksigenVal.text = p1.getStringExtra("OKSIGEN")
+                    if (p1.getStringExtra("FLOW") != null) flowVal.text = p1.getStringExtra("FLOW")
+                    if (p1.getStringExtra("GELEMBUNG") != null && p1.getStringExtra("GELEMBUNG") != " 1.00") gelembungVal.text = "BERGELEMBUNG"
+                    else gelembungVal.text = "AMAN"
                 }
             }
         }
