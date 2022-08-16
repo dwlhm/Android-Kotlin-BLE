@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewClickListener {
     }
 
     override fun onItemClicked(view: View, device: ModelDevice) {
-        Toast.makeText(this, "Device ${device.getMac()} dipilinh!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Device ${device.getMac()} dipilih!", Toast.LENGTH_SHORT).show()
         startActivity(Intent(this@MainActivity, ReadingActivity::class.java).putExtra("device_name", device.getDate()).putExtra("device_mac", device.getMac()))
     }
 
